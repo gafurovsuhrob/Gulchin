@@ -1,6 +1,8 @@
 package com.seros.gulchin.fragments
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -16,6 +18,10 @@ import com.seros.gulchin.VerseAdapter
 import com.seros.gulchin.VerseClickListener
 import com.seros.gulchin.databinding.FragmentMainBinding
 import com.seros.gulchin.model.Verse
+import com.seros.gulchin.model.VerseItem
+import org.json.JSONArray
+import org.json.JSONException
+import java.io.IOException
 
 @Suppress("DEPRECATION")
 class MainFragment : Fragment(), VerseClickListener {
@@ -25,7 +31,7 @@ class MainFragment : Fragment(), VerseClickListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var myAdapter: VerseAdapter
-    private var verseList: List<Verse> = emptyList()
+    private var verseList: List<VerseItem> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,39 +43,29 @@ class MainFragment : Fragment(), VerseClickListener {
         return binding.root
     }
 
-    @SuppressLint("Range")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val dbHelper = MyDataBaseHelper(requireContext())
-        val db = dbHelper.readableDatabase
+        val json = loadJsonData(requireContext())
+        if (json.isNotEmpty()) {
+            val jsonArray = JSONArray(json)
+            val verses = ArrayList<VerseItem>()
 
-        // Выполните запрос к базе данных для выборки всех данных
-        val selectQuery = "SELECT * FROM Verses"
-        val cursor = db.rawQuery(selectQuery, null)
+            for (i in 0 until jsonArray.length()) {
+                val jsonObject = jsonArray.getJSONObject(i)
+                val id = jsonObject.getInt("Id")
+                val title = jsonObject.getString("Title")
+                val verseText = jsonObject.getString("Verse_Text")
+                val date = jsonObject.getString("Date")
+                val verseNumber = jsonObject.getString("Verse_Namber")
 
-        val verses = ArrayList<Verse>()
+                verses.add(VerseItem(id, title, verseNumber, date, verseText ))
+            }
 
-        if (cursor.moveToFirst()) {
-            do {
-                val id = cursor.getInt(cursor.getColumnIndex("Id"))
-                val title = cursor.getString(cursor.getColumnIndex("Title"))
-                val verseText = cursor.getString(cursor.getColumnIndex("Verse_Text"))
-                val date = cursor.getString(cursor.getColumnIndex("Date"))
-                val verseNumber = cursor.getString(cursor.getColumnIndex("Verse_Number"))
-
-                val verse = Verse(id, title, verseText, date, verseNumber)
-                verses.add(verse)
-            } while (cursor.moveToNext())
+            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            myAdapter = VerseAdapter(verses, this)
+            recyclerView.adapter = myAdapter
         }
-        Log.d("TAG", "onViewCreated: $verses")
-
-        cursor.close()
-
-        // Инициализируйте адаптер и установите его в RecyclerView
-        myAdapter = VerseAdapter(verses, this)
-        recyclerView.adapter = myAdapter
     }
 
     override fun onDestroy() {
@@ -77,7 +73,23 @@ class MainFragment : Fragment(), VerseClickListener {
         _binding = null
     }
 
-    override fun clickVerse(verse: Verse) {
-        Toast.makeText(requireContext(), verse.title, Toast.LENGTH_SHORT).show()
+    override fun clickVerse(verse: VerseItem) {
+        Toast.makeText(requireContext(), verse.Title, Toast.LENGTH_SHORT).show()
     }
+
+    private fun loadJsonData(context: Context): String {
+        var json: String? = null
+        try {
+            val inputStream = context.assets.open("verses.json")
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            inputStream.close()
+            json = String(buffer, Charsets.UTF_8)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return json ?: ""
+    }
+
 }

@@ -5,18 +5,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.seros.gulchin.databinding.RowItemVerseBinding
 import com.seros.gulchin.model.Verse
+import com.seros.gulchin.model.VerseItem
 
-class VerseAdapter(private var verseList: List<Verse>, private val listener: VerseClickListener):
+class VerseAdapter(private var verseList: List<VerseItem>, private val listener: VerseClickListener):
     RecyclerView.Adapter<VerseAdapter.ViewHolder>(){
     inner class ViewHolder(binding: RowItemVerseBinding): RecyclerView.ViewHolder(binding.root) {
         val title = binding.verseTitle
         val number = binding.verseNumber
         val date = binding.verseDate
 
-        fun bind(verse: Verse){
-            title.text = verse.title
-            number.text = verse.verseNumber
-            date.text = verse.date
+        fun bind(verse: VerseItem){
+            title.text = verse.Title
+            number.text = verse.Verse_Namber
+            date.text = verse.Date
         }
 
     }
