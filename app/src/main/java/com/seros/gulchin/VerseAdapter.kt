@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.seros.gulchin.databinding.RowItemVerseBinding
-import com.seros.gulchin.model.Verse
 import com.seros.gulchin.model.VerseItem
 
 class VerseAdapter(private var verseList: List<VerseItem>, private val listener: VerseClickListener):
@@ -19,7 +18,11 @@ class VerseAdapter(private var verseList: List<VerseItem>, private val listener:
             number.text = verse.Verse_Namber
             date.text = verse.Date
         }
+    }
 
+    fun updateList(newVerses: List<VerseItem>){
+        verseList = newVerses
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerseAdapter.ViewHolder {

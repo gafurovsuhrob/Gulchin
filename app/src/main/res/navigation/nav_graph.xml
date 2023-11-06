@@ -8,6 +8,23 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.seros.gulchin.fragments.MainFragment"
-        android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
+        android:label="Гулчини Ашъор"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_dataVerseFragment"
+            app:destination="@id/dataVerseFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/dataVerseFragment"
+        android:name="com.seros.gulchin.fragments.DataVerseFragment"
+        android:label="fragment_data_verse"
+        tools:layout="@layout/fragment_data_verse" >
+        <argument
+            android:name="verse"
+            app:argType="com.seros.gulchin.model.VerseItem" />
+    </fragment>
 </navigation>
