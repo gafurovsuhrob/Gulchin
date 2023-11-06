@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import androidx.navigation.findNavController
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.seros.gulchin.databinding.ActivityMainBinding
 
@@ -23,6 +24,9 @@ class MainActivity : AppCompatActivity() {
         prefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)!!
         toolbar = binding.toolbar
         setSupportActionBar(toolbar)
+
+        val navController = findNavController(R.id.fragmentContainer)
+        setupActionBarWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {

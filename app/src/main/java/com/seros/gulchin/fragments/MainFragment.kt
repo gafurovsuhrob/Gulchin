@@ -1,37 +1,46 @@
 package com.seros.gulchin.fragments
 
-import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.seros.gulchin.MyDataBaseHelper
 import com.seros.gulchin.R
 import com.seros.gulchin.VerseAdapter
 import com.seros.gulchin.VerseClickListener
 import com.seros.gulchin.databinding.FragmentMainBinding
-import com.seros.gulchin.model.Verse
 import com.seros.gulchin.model.VerseItem
 import org.json.JSONArray
-import org.json.JSONException
 import java.io.IOException
 
 @Suppress("DEPRECATION")
 class MainFragment : Fragment(), VerseClickListener {
 
     private var _binding: FragmentMainBinding? = null
-    private val binding  get() = _binding!!
+    private val binding get() = _binding!!
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var myAdapter: VerseAdapter
-    private var verseList: List<VerseItem> = emptyList()
+
+    lateinit var recyclerView: RecyclerView
+    lateinit var myAdapter: VerseAdapter
+
+    var verseList: MutableList<VerseItem> = mutableListOf()
+    var verseListFiltered: List<VerseItem> = emptyList()
+
+    lateinit var searchView: androidx.appcompat.widget.SearchView
+    lateinit var viewSearch: ConstraintLayout
+    lateinit var ibCloseSearch: ImageButton
+    var searchText: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,33 +48,64 @@ class MainFragment : Fragment(), VerseClickListener {
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         recyclerView = binding.rvVerses
+        searchView = binding.searchView
+        viewSearch = binding.searchLayout
+        ibCloseSearch = binding.ibCloseSearch
         setHasOptionsMenu(true)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        searchRealization()
 
-        val json = loadJsonData(requireContext())
-        if (json.isNotEmpty()) {
-            val jsonArray = JSONArray(json)
-            val verses = ArrayList<VerseItem>()
+        if (verseList.isEmpty()) {
+            val json = loadJsonData(requireContext())
+            if (json.isNotEmpty()) {
+                val jsonArray = JSONArray(json)
 
-            for (i in 0 until jsonArray.length()) {
-                val jsonObject = jsonArray.getJSONObject(i)
-                val id = jsonObject.getInt("Id")
-                val title = jsonObject.getString("Title")
-                val verseText = jsonObject.getString("Verse_Text")
-                val date = jsonObject.getString("Date")
-                val verseNumber = jsonObject.getString("Verse_Namber")
+                for (i in 0 until jsonArray.length()) {
+                    val jsonObject = jsonArray.getJSONObject(i)
+                    val id = jsonObject.getInt("Id")
+                    val title = jsonObject.getString("Title")
+                    val verseText = jsonObject.getString("Verse_Text")
+                    val date = jsonObject.getString("Date")
+                    val verseNumber = jsonObject.getString("Verse_Namber")
 
-                verses.add(VerseItem(id, title, verseNumber, date, verseText ))
+                    verseList.add(VerseItem(id, title, verseNumber, date, verseText))
+                }
+                verseList.sortBy { it.Verse_Namber.toInt() }
+            }
+        }
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        myAdapter = VerseAdapter(verseList, this)
+        recyclerView.adapter = myAdapter
+
+        savingAndFetchSearch()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.item_search -> {
+                searchViewFun()
+                true
             }
 
-            recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            myAdapter = VerseAdapter(verses, this)
-            recyclerView.adapter = myAdapter
+            R.id.item_info -> {
+
+                true
+            }
+
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
+
     }
 
     override fun onDestroy() {
@@ -74,7 +114,8 @@ class MainFragment : Fragment(), VerseClickListener {
     }
 
     override fun clickVerse(verse: VerseItem) {
-        Toast.makeText(requireContext(), verse.Title, Toast.LENGTH_SHORT).show()
+        val action = MainFragmentDirections.actionMainFragmentToDataVerseFragment(verse)
+        findNavController().navigate(action)
     }
 
     private fun loadJsonData(context: Context): String {

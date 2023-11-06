@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.DataVerseFragment">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <TextView
+                android:id="@+id/hello"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical|center|start"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="10dp"
+                android:scrollbarSize="5dp"
+                android:scrollbarStyle="insideOverlay"
+                android:scrollbars="vertical"
+                android:text="@string/hello"
+                android:textColor="@color/primary_color"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.core.widget.NestedScrollView>
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnNextVerse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/white"
+            android:clickable="true"
+            android:src="@drawable/ic_next"
+            app:elevation="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/primary_color" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnPreviousVerse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/white"
+            android:clickable="true"
+            android:src="@drawable/ic_back_2"
+            app:elevation="3dp"
+            app:layout_constraintBottom_toBottomOf="@+id/btnNextVerse"
+            app:layout_constraintEnd_toStartOf="@+id/btnNextVerse"
+            app:layout_constraintTop_toTopOf="@+id/btnNextVerse"
+            app:tint="@color/primary_color" />
+
+        <TextView
+            android:id="@+id/tvNumberVerse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/bg_tv_1"
+            android:backgroundTint="@color/white"
+            android:elevation="3dp"
+            android:padding="5dp"
+            android:text="№45"
+            android:textColor="@color/primary_color"
+            app:layout_constraintBottom_toTopOf="@+id/tvDateVerse"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnNextVerse" />
+
+        <TextView
+            android:id="@+id/tvDateVerse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/bg_tv_1"
+            android:backgroundTint="@color/white"
+            android:elevation="3dp"
+            android:padding="5dp"
+            android:text="10.12.2017"
+            android:textColor="@color/primary_color"
+            app:layout_constraintBottom_toBottomOf="@+id/btnNextVerse"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvNumberVerse" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
