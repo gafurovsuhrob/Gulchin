@@ -10,12 +10,14 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.seros.gulchin.R
 import com.seros.gulchin.VerseAdapter
 import com.seros.gulchin.VerseClickListener
@@ -30,6 +32,7 @@ class MainFragment : Fragment(), VerseClickListener {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
+    lateinit var btnScrollToTop: FloatingActionButton
 
     lateinit var recyclerView: RecyclerView
     lateinit var myAdapter: VerseAdapter
@@ -51,6 +54,7 @@ class MainFragment : Fragment(), VerseClickListener {
         searchView = binding.searchView
         viewSearch = binding.searchLayout
         ibCloseSearch = binding.ibCloseSearch
+        btnScrollToTop = binding.button
         setHasOptionsMenu(true)
         return binding.root
     }
@@ -81,6 +85,25 @@ class MainFragment : Fragment(), VerseClickListener {
         myAdapter = VerseAdapter(verseList, this)
         recyclerView.adapter = myAdapter
 
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                val firstVisibleItemPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+
+                if (firstVisibleItemPosition > 7) {
+                    btnScrollToTop.visibility = View.VISIBLE
+                } else {
+                    btnScrollToTop.visibility = View.INVISIBLE
+                }
+            }
+        })
+
+        btnScrollToTop.setOnClickListener {
+            recyclerView.smoothScrollToPosition(0)
+        }
+
         savingAndFetchSearch()
     }
 
@@ -91,16 +114,18 @@ class MainFragment : Fragment(), VerseClickListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.item_favorites -> {
+                findNavController().navigate(R.id.action_mainFragment_to_favoriteVersesFragment)
+                true
+            }
             R.id.item_search -> {
                 searchViewFun()
                 true
             }
-
             R.id.item_info -> {
-
+                findNavController().navigate(R.id.action_mainFragment_to_infoFragment)
                 true
             }
-
             else -> {
                 super.onOptionsItemSelected(item)
             }

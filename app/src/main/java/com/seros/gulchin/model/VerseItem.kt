@@ -10,5 +10,6 @@ data class VerseItem(
     val Title: String,
     val Verse_Namber: String,
     val Date: String,
-    val Verse_Text: String
+    val Verse_Text: String,
+    var isFavorite: Boolean = false
 ) : Parcelable, Serializable

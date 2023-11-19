@@ -27,7 +27,6 @@ class DataVerseFragment : Fragment() {
 
     var verseList: MutableList<VerseItem> = mutableListOf()
 
-
     var currentVerseId = 1
     private val maxVerseId = 708
     private var currentIndex: Int = -1
@@ -80,7 +79,7 @@ class DataVerseFragment : Fragment() {
             tvDateVerse.text = verse.Date
             tvNumberVerse.text = "№${verse.Verse_Namber}"
             hello.text = verse.Verse_Text
-            toolbar.title = capitalizeFirstLetter(args.verse.Title)
+            toolbar.title = capitalizeFirstLetter(verse.Title)
         }
     }
 

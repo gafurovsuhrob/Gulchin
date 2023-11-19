@@ -17,16 +17,14 @@
             android:id="@+id/verseNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginStart="6dp"
             android:background="@drawable/bg_tv_1"
             android:padding="5dp"
             android:text="885"
             android:textColor="@color/primary_color3"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/verseTitle" />
+            app:layout_constraintBottom_toBottomOf="@+id/verseDate"
+            app:layout_constraintStart_toEndOf="@+id/verseDate"
+            app:layout_constraintTop_toTopOf="@+id/verseDate" />
 
         <TextView
             android:id="@+id/verseTitle"
@@ -51,15 +49,29 @@
             android:id="@+id/verseDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/bg_tv_1"
             android:padding="5dp"
             android:text="11/10/2023"
             android:textColor="@color/primary_color3"
             android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/verseNumber"
-            app:layout_constraintEnd_toStartOf="@+id/verseNumber"
-            app:layout_constraintTop_toTopOf="@+id/verseNumber" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/verseTitle" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/bg_click_2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/verseTitle"
+            app:srcCompat="@drawable/ic_favorite_empty"
+            app:tint="@color/primary_color" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

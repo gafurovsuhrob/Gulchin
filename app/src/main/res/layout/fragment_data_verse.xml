@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".fragments.DataVerseFragment">
 
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -73,13 +72,27 @@
             android:id="@+id/btnPreviousVerse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="12dp"
             android:backgroundTint="@color/white"
             android:clickable="true"
             android:src="@drawable/ic_back_2"
             app:elevation="3dp"
             app:layout_constraintBottom_toBottomOf="@+id/btnNextVerse"
             app:layout_constraintEnd_toStartOf="@+id/btnNextVerse"
+            app:layout_constraintTop_toTopOf="@+id/btnNextVerse"
+            app:tint="@color/primary_color" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:clickable="true"
+            android:src="@drawable/ic_favorite_empty"
+            app:elevation="3dp"
+            app:layout_constraintBottom_toBottomOf="@+id/btnNextVerse"
+            app:layout_constraintEnd_toStartOf="@+id/btnPreviousVerse"
+            app:layout_constraintStart_toEndOf="@+id/tvDateVerse"
             app:layout_constraintTop_toTopOf="@+id/btnNextVerse"
             app:tint="@color/primary_color" />
 
@@ -116,6 +129,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/btnNextVerse"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvNumberVerse" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

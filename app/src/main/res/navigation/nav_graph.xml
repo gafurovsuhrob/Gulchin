@@ -17,6 +17,20 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right"/>
+        <action
+            android:id="@+id/action_mainFragment_to_infoFragment"
+            app:destination="@id/infoFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"/>
+        <action
+            android:id="@+id/action_mainFragment_to_favoriteVersesFragment"
+            app:destination="@id/favoriteVersesFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"/>
     </fragment>
     <fragment
         android:id="@+id/dataVerseFragment"
@@ -27,4 +41,14 @@
             android:name="verse"
             app:argType="com.seros.gulchin.model.VerseItem" />
     </fragment>
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="com.seros.gulchin.InfoFragment"
+        android:label="Дар бораи барнома"
+        tools:layout="@layout/fragment_info" />
+    <fragment
+        android:id="@+id/favoriteVersesFragment"
+        android:name="com.seros.gulchin.FavoriteVersesFragment"
+        android:label="Дӯстдоштаҳо"
+        tools:layout="@layout/fragment_favorite_verses" />
 </navigation>
