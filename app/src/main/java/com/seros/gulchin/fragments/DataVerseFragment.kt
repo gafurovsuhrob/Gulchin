@@ -29,7 +29,9 @@ class DataVerseFragment : Fragment() {
 
     var currentVerseId = 1
     private val maxVerseId = 708
+
     private var currentIndex: Int = -1
+    private var currentVerseNumber: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,17 +61,24 @@ class DataVerseFragment : Fragment() {
                 verseList.sortBy { it.Verse_Namber.toInt() }
             }
         }
-        currentIndex = verseList.indexOfFirst { it.Verse_Namber == currentVerseId.toString() }
-        Toast.makeText(requireContext(), "$currentVerseId", Toast.LENGTH_SHORT).show()
+
+        currentIndex = verseList.indexOfFirst { it.Verse_Namber == currentVerseNumber }
+        currentVerseNumber = args.verse.Verse_Namber
+        setData(args.verse)
 
         binding.btnNextVerse.setOnClickListener {
-            onForwardButtonClicked()
+            if (currentIndex < verseList.size - 1) {
+                currentIndex++
+                setData(verseList[currentIndex])
+            }
         }
 
         binding.btnPreviousVerse.setOnClickListener {
-            onBackwardButtonClicked()
+            if (currentIndex > 0) {
+                currentIndex--
+                setData(verseList[currentIndex])
+            }
         }
-        setData(args.verse)
         return binding.root
     }
 
@@ -81,37 +90,11 @@ class DataVerseFragment : Fragment() {
             hello.text = verse.Verse_Text
             toolbar.title = capitalizeFirstLetter(verse.Title)
         }
+
+        currentIndex = verseList.indexOf(verse)
+        currentVerseNumber = verse.Verse_Namber
     }
 
-    private fun displayVerseByNumber(verseNumber: String) {
-        val verse = verseList.find { it.Verse_Namber == verseNumber }
-        verse?.let { setData(it) }
-    }
-
-    private fun moveToNearestVerse(isNext: Boolean) {
-        if (currentIndex != -1) {
-            val newIndex = if (isNext) currentIndex + 1 else currentIndex - 1
-            if (newIndex in 0 until verseList.size) {
-                currentIndex = newIndex
-                displayVerseByNumber(verseList[newIndex].Verse_Namber)
-            }
-        }
-    }
-
-    private fun onForwardButtonClicked() {
-        moveToNearestVerse(isNext = true)
-    }
-
-    private fun onBackwardButtonClicked() {
-        moveToNearestVerse(isNext = false)
-    }
-
-    private fun displayVerse(verseId: Int) {
-        val displayedVerse = verseList.find { it.Id == verseId }
-        displayedVerse?.let {
-            setData(it)
-        }
-    }
 
     private fun loadJsonData(context: Context): String {
         var json: String? = null
