@@ -2,22 +2,29 @@ package com.seros.gulchin.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.appbar.MaterialToolbar
 import com.seros.gulchin.R
 import com.seros.gulchin.databinding.FragmentDataVerseBinding
+import com.seros.gulchin.favorite.Favorite
+import com.seros.gulchin.favorite.FavoriteObserver
 import com.seros.gulchin.model.VerseItem
 import org.json.JSONArray
 import java.io.IOException
 
 @Suppress("DEPRECATION")
-class DataVerseFragment : Fragment() {
+class DataVerseFragment : Fragment(), FavoriteObserver {
 
     private var _binding: FragmentDataVerseBinding? = null
     private val binding get() = _binding!!
@@ -30,8 +37,13 @@ class DataVerseFragment : Fragment() {
     var currentVerseId = 1
     private val maxVerseId = 708
 
+    lateinit var favoriteObserver: FavoriteObserver
+
     private var currentIndex: Int = -1
     private var currentVerseNumber: String = ""
+
+    private lateinit var sharedPreferences: SharedPreferences
+    private val FAVORITES_KEY = "favorites"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,9 +51,14 @@ class DataVerseFragment : Fragment() {
     ): View {
         _binding = FragmentDataVerseBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
+        Favorite.loadCartFromPrefs(requireContext())
+        favoriteObserver = this
+        Favorite.addObserver(favoriteObserver)
+
         toolbar = requireActivity().findViewById(R.id.toolbar)
         toolbar.setNavigationIcon(R.drawable.ic_back)
         currentVerseId = args.verse.Id
+        sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
         if (verseList.isEmpty()) {
             val json = loadJsonData(requireContext())
@@ -56,7 +73,8 @@ class DataVerseFragment : Fragment() {
                     val date = jsonObject.getString("Date")
                     val verseNumber = jsonObject.getString("Verse_Namber")
 
-                    verseList.add(VerseItem(id, title, verseNumber, date, verseText))
+                    val verseItem = VerseItem(id, title, verseNumber, date, verseText)
+                    verseList.add(verseItem)
                 }
                 verseList.sortBy { it.Verse_Namber.toInt() }
             }
@@ -79,22 +97,51 @@ class DataVerseFragment : Fragment() {
                 setData(verseList[currentIndex])
             }
         }
+
+        binding.btnFavorite.setOnClickListener {
+            val currentVerse = verseList.getOrNull(currentIndex)
+            if (currentVerse != null) {
+                toggleFavoriteState(currentVerse)
+            } else {
+                Log.e("Favorites", "Current verse is null")
+            }
+        }
         return binding.root
     }
 
+
+
     @SuppressLint("SetTextI18n")
-    fun setData(verse: VerseItem) {
+    private fun setData(verse: VerseItem) {
         binding.apply {
             tvDateVerse.text = verse.Date
             tvNumberVerse.text = "№${verse.Verse_Namber}"
             hello.text = verse.Verse_Text
             toolbar.title = capitalizeFirstLetter(verse.Title)
+
+            val isFavorite = Favorite.getAllFavoriteItems().contains(verse)
+            val favoriteIcon = if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_empty
+            btnFavorite.setImageResource(favoriteIcon)
+
+            btnFavorite.setOnClickListener {
+                toggleFavoriteState(verse)
+            }
         }
 
         currentIndex = verseList.indexOf(verse)
         currentVerseNumber = verse.Verse_Namber
     }
 
+    private fun toggleFavoriteState(verse: VerseItem) {
+        if (Favorite.getAllFavoriteItems().contains(verse)) {
+            Favorite.removeProduct(verse.Id, requireContext())
+        } else {
+            Favorite.addFavorite(verse, requireContext())
+        }
+        updateUIWithFavoriteItems(Favorite.getAllFavoriteItems().toSet())
+        Favorite.saveCartToPrefs(requireContext())
+        Log.d("Favorites", "Toggle state for verse ${verse.Id}")
+    }
 
     private fun loadJsonData(context: Context): String {
         var json: String? = null
@@ -111,8 +158,34 @@ class DataVerseFragment : Fragment() {
         return json ?: ""
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onFavoriteChanged(verseItems: Set<VerseItem>) {
+        updateUIWithFavoriteItems(verseItems)
+    }
+
+    private fun updateUIWithFavoriteItems(verseItems: Set<VerseItem>) {
+        val currentVerse = verseList.getOrNull(currentIndex)
+        currentVerse?.let {
+            val isFavorite = verseItems.contains(it)
+            val favoriteIcon = if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_empty
+            binding.btnFavorite.setImageResource(favoriteIcon)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Favorite.notifyObservers()
+        Favorite.loadCartFromPrefs(requireContext())
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Favorite.removeObserver(favoriteObserver)
+        Favorite.loadCartFromPrefs(requireContext())
         _binding = null
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Favorite.loadCartFromPrefs(requireContext())
     }
 }

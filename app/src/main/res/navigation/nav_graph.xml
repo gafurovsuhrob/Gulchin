@@ -35,7 +35,7 @@
     <fragment
         android:id="@+id/dataVerseFragment"
         android:name="com.seros.gulchin.fragments.DataVerseFragment"
-        android:label="fragment_data_verse"
+        android:label=""
         tools:layout="@layout/fragment_data_verse" >
         <argument
             android:name="verse"
@@ -43,12 +43,16 @@
     </fragment>
     <fragment
         android:id="@+id/infoFragment"
-        android:name="com.seros.gulchin.InfoFragment"
-        android:label="Дар бораи барнома"
+        android:name="com.seros.gulchin.fragments.InfoFragment"
+        android:label="Дар бораи мо"
         tools:layout="@layout/fragment_info" />
     <fragment
         android:id="@+id/favoriteVersesFragment"
         android:name="com.seros.gulchin.FavoriteVersesFragment"
         android:label="Дӯстдоштаҳо"
-        tools:layout="@layout/fragment_favorite_verses" />
+        tools:layout="@layout/fragment_favorite_verses" >
+        <action
+            android:id="@+id/action_favoriteVersesFragment_to_dataVerseFragment"
+            app:destination="@id/dataVerseFragment" />
+    </fragment>
 </navigation>

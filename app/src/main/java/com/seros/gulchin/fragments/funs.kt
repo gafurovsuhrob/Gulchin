@@ -10,7 +10,7 @@ fun MainFragment.filterSearchResults() {
     verseListFiltered = if (searchText.isNotEmpty()) {
         verseList.filter { verse ->
             verse.Verse_Namber.contains(searchText, ignoreCase = true) ||
-                    verse.Title.contains(searchText, ignoreCase = true)
+            verse.Verse_Text.contains(searchText, ignoreCase = true)
         }
     } else {
         verseList

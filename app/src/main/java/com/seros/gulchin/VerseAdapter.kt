@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.seros.gulchin.databinding.RowItemVerseBinding
+import com.seros.gulchin.favorite.Favorite
 import com.seros.gulchin.model.VerseItem
 
 class VerseAdapter(private var verseList: List<VerseItem>, private val listener: VerseClickListener):
@@ -12,11 +13,20 @@ class VerseAdapter(private var verseList: List<VerseItem>, private val listener:
         val title = binding.verseTitle
         val number = binding.verseNumber
         val date = binding.verseDate
+        val addToFavoriteButton = binding.imageButton
 
         fun bind(verse: VerseItem){
             title.text = verse.Title
             number.text = verse.Verse_Namber
             date.text = verse.Date
+
+            val isFavorite = Favorite.getVerseById(verse.Id)
+            val favoriteIcon = if (isFavorite != null) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_empty
+            addToFavoriteButton.setImageResource(favoriteIcon)
+
+            addToFavoriteButton.setOnClickListener {
+                listener.addToFavoritesClicked(verse)
+            }
         }
     }
 
