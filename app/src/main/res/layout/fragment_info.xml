@@ -14,13 +14,13 @@
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="320dp"
-            android:layout_height="320dp"
+            android:layout_width="300dp"
+            android:layout_height="400dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="12dp"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_author"
+            android:src="@drawable/hello"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
