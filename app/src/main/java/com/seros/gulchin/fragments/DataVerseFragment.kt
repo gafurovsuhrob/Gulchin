@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -117,6 +118,15 @@ class DataVerseFragment : Fragment(), FavoriteObserver {
             tvDateVerse.text = verse.Date
             tvNumberVerse.text = "№${verse.Verse_Namber}"
             hello.text = verse.Verse_Text
+
+            val isTablet = resources.getBoolean(R.bool.isTablet)
+            Log.d("TAG", "setData: $isTablet")
+
+            if (isTablet) {
+                val largeTextSize = 80f
+                binding.hello.setTextSize(TypedValue.COMPLEX_UNIT_PX, largeTextSize)
+            }
+
             toolbar.title = capitalizeFirstLetter(verse.Title)
 
             val isFavorite = Favorite.getAllFavoriteItems().contains(verse)

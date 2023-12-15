@@ -162,7 +162,6 @@ class MainFragment : Fragment(), VerseClickListener, FavoriteObserver {
                 it
             }
         }
-
         myAdapter.updateList(updatedVerseList)
         Favorite.saveCartToPrefs(requireContext())
     }

@@ -18,4 +18,7 @@
     <string name="link_2">
         Маълумот барои тамос <font color="#364985">tajlingvo@gmail.com</font>
     </string>
+
+    <dimen name="text_size_normal">16sp</dimen>
+    <dimen name="text_size_large">24sp</dimen>
 </resources>
